@@ -1,19 +1,34 @@
 (function() {
-
     let DB;
 
-    const formulario = document.querySelector('#formulario');
+    function conectarDB() { 
+        const openConn = window.indexedDB.open('crm', 1);
 
-    document.addEventListener('DOMContentLoaded', () => {
+        openConn.onerror = function(e) {
+            console.log("Error occurred while opening IndexedDB: ", e);
+        };
         
-        formulario.addEventListener('submit', validarCliente);
+        openConn.onupgradeneeded = function(e) {
+            let db = e.target.result;
+            const objectStore = db.createObjectStore('crm', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('nombre', 'nombre', { unique: false });
+            objectStore.createIndex('email', 'email', { unique: true });
+            objectStore.createIndex('telefono', 'telefono', { unique: false });
+            objectStore.createIndex('empresa', 'empresa', { unique: false });
+            objectStore.createIndex('id', 'id', { unique: true });
 
-        conectarDB();        
-    });
+            console.log('IndexedDB created');
+        };
 
+        openConn.onsuccess = function() {
+            DB = openConn.result;
+            
+            console.log('IndexedDB loaded successfully');
+        }
+    }
 
     function validarCliente(e) {
-        e.prventDefault();
+        e.preventDefault();
         
         // leer todos los inputs
         const nombre = document.querySelector('#nombre').value;
@@ -27,7 +42,6 @@
         };
 
         // crear un objeto con la informacion
-
         const cliente = {
             nombre,
             email,
@@ -49,7 +63,7 @@
         objectStore.add(cliente);
         
         transaction.oncomplete = () => {
-            console.log('Cliente Agergado');
+            console.log('Cliente Agregado');
 
             // mostrar mensaje que todo esta bien
             imprimirAlerta('Se agergo correctamente');
@@ -64,4 +78,24 @@
         };
     }
 
+    function imprimirAlerta(msg, tipo) {
+        const alerta = document.createElement('div');
+        alerta.textContent = msg;
+        alerta.classList.add('alerta');
+        if (tipo === 'error') {
+            alerta.classList.add('error');
+        } else {
+            alerta.classList.add('correcto');
+    }
+
+    formulario.appendChild(alerta);
+
+    setTimeout(() => alerta.remove(), 3000);
+    }
+
+    conectarDB();
+
+    const formulario = document.querySelector('#formulario');
+
+    formulario.addEventListener('submit', validarCliente);
 })();
