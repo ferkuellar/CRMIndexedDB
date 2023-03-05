@@ -14,7 +14,7 @@
     function conectarDB(){
         // abrir conexion en la bd
 
-        let abrirConexion = window.indexedDB.open('crm', 1);
+        const abrirConexion = window.indexedDB.open('crm', 1);
 
         //  si hay un error, lanzarlo
         abrirConexion.onerror = function(){

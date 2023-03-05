@@ -58,7 +58,7 @@
 
         abrirConexion.onsuccess = function() {
             DB = abrirConexion.result;
-            const objecStore = DB.transaction('crm').objectStore('crm');
+            const objectStore = DB.transaction('crm').objectStore('crm');
 
             objectStore.opencursor().onsuccess = function(e) {
                 const cursor = e.target.result;
