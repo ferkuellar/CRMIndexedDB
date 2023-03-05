@@ -1,10 +1,17 @@
 (function(){
     let DB;
     const nombreInput = document.querySelector('#nombre');
+    const emailInput = document.querySelector('#email');
+    const telefonoInput = document.querySelector('#telefono');
+    const empresaInput = document.querySelector('#empresa');
+
+    const formulario = document.querySelector('#fromulario');
 
     document.addEventListener('DOMContentLoaded', () => {
         conectarDB();
-        // verificar el ID de la url
+        // actualiza el registro
+        formulario.addEventListener('submit', actualizarCliente);
+        // verificar el ID de la URL
         const parametrosURL = new URLSearchParams(windows.location.search);
         const idCliente = parametrosURL.get('id');
         if(idCliente) {
@@ -13,6 +20,16 @@
             }, 100);
         };
     });
+
+    function actualizarCliente(e) {
+        e.prevent.default();
+
+        if(nombreInput.value === '' || emailInput.value === '' || empresa.value === '' || telefonoInput === ''){
+            imprimirAlerta('Todos los campos son obligatorios', 'error');
+
+            return;
+        };
+    };
 
     function obtenerCliente(id) {
         const transaction = DB.transaction(['crm'], 'readonly');
@@ -33,9 +50,12 @@
     };
 
     function llenarFormulario(datosCliente) {
-        const {} = datosCliente;
+        const {nombre, email, telefono, empresa} = datosCliente;
 
         nombreInput.value = nombre;
+        emailInput.value = email;
+        telefonoInput.value = telefono;
+        empresaInput.value = empresa;
     }
 
     function conectarDB() {
