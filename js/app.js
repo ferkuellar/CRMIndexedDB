@@ -6,7 +6,7 @@
     
         if(window.indexedDB.open('crm', 1)) {
             obtenerClientes();
-        }
+        };
         
     });
     
@@ -45,7 +45,8 @@
     
             
             console.log('Database creada y lista');
-        };    
-    };
+        };
+    
+    }
 
 })();
